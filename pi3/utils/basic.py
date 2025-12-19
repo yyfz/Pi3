@@ -2,7 +2,7 @@ import os
 import os.path as osp
 import math
 import cv2
-from PIL import Image
+from PIL import Image, ImageOps
 import torch
 from torchvision import transforms
 from plyfile import PlyData, PlyElement
@@ -18,11 +18,13 @@ def load_images_as_tensor(path='data/truck', interval=1, PIXEL_LIMIT=255000):
     # --- 1. Load image paths or video frames ---
     if osp.isdir(path):
         print(f"Loading images from directory: {path}")
-        filenames = sorted([x for x in os.listdir(path) if x.lower().endswith(('.png', '.jpg', '.jpeg'))])
+        filenames = sorted([x for x in os.listdir(path) if x.lower().endswith(('.png', '.jpg', '.jpeg', '.heif'))])
         for i in range(0, len(filenames), interval):
             img_path = osp.join(path, filenames[i])
             try:
-                sources.append(Image.open(img_path).convert('RGB'))
+                img = Image.open(img_path).convert('RGB')
+                img = ImageOps.exif_transpose(img)
+                sources.append(img)
             except Exception as e:
                 print(f"Could not load image {filenames[i]}: {e}")
     elif path.lower().endswith('.mp4'):
