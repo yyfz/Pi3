@@ -1,8 +1,10 @@
-import torch
 import argparse
+
+import torch
+
+from pi3.models.pi3 import Pi3
 from pi3.utils.basic import load_images_as_tensor, write_ply
 from pi3.utils.geometry import depth_edge
-from pi3.models.pi3 import Pi3
 
 if __name__ == '__main__':
     # --- Argument Parsing ---
@@ -25,7 +27,7 @@ if __name__ == '__main__':
     print(f'Sampling interval: {args.interval}')
 
     # 1. Prepare model
-    print(f"Loading model...")
+    print("Loading model...")
     device = torch.device(args.device)
     if args.ckpt is not None:
         model = Pi3().to(device).eval()

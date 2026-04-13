@@ -1,24 +1,23 @@
-import os
-import cv2
-import torch
-import numpy as np
-import gradio as gr
-import sys
-import shutil
-from datetime import datetime
-import glob
 import gc
+import glob
+import os
+import shutil
 import time
-# import spaces         # only for web demo
+from datetime import datetime
 
-from pi3.utils.geometry import se3_inverse, homogenize_points, depth_edge
+import cv2
+import gradio as gr
+import matplotlib
+import numpy as np
+import torch
+import trimesh
+from scipy.spatial.transform import Rotation
+
 from pi3.models.pi3 import Pi3
 from pi3.utils.basic import load_images_as_tensor
 
-import trimesh
-import matplotlib
-from scipy.spatial.transform import Rotation
-
+# import spaces         # only for web demo
+from pi3.utils.geometry import depth_edge
 
 """
 Gradio utils

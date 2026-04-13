@@ -1,10 +1,12 @@
-import torch
 import argparse
-import numpy as np
 import os
+
+import numpy as np
+import torch
+
+from pi3.models.pi3x import Pi3X
 from pi3.utils.basic import load_multimodal_data, write_ply
 from pi3.utils.geometry import depth_edge, recover_intrinsic_from_rays_d
-from pi3.models.pi3x import Pi3X
 
 if __name__ == '__main__':
     # --- Argument Parsing ---
@@ -60,7 +62,7 @@ if __name__ == '__main__':
         print("No multimodal conditions found. Disable multimodal branch to reduce memory usage.")
 
     # 2. Prepare model
-    print(f"Loading model...")
+    print("Loading model...")
     if args.ckpt is not None:
         model = Pi3X(use_multimodal=use_multimodal).eval()
         if args.ckpt.endswith('.safetensors'):

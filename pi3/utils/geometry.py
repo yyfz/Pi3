@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
+
 def se3_inverse(T):
     """
     Computes the inverse of a batch of SE(3) matrices.

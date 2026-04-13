@@ -9,8 +9,8 @@
 
 
 import numpy as np
-
 import torch
+
 
 # --------------------------------------------------------
 # 2D sine-cosine position embedding
@@ -166,7 +166,7 @@ class PositionGetter(object):
         self.cache_positions = {}
         
     def __call__(self, b, h, w, device):
-        if not (h,w) in self.cache_positions:
+        if (h,w) not in self.cache_positions:
             x = torch.arange(w, device=device)
             y = torch.arange(h, device=device)
             self.cache_positions[h,w] = torch.cartesian_prod(y, x) # (h, w, 2)

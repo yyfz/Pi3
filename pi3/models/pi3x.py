@@ -1,19 +1,20 @@
+from copy import deepcopy
+from functools import partial
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from functools import partial
-from copy import deepcopy
 from huggingface_hub import PyTorchModelHubMixin
 
-from .layers.conv_head import ConvHead
-from .layers.camera_head import CameraHead
+from ..utils.geometry import get_pixel, homogenize_points, se3_inverse
+from .dinov2.hub.backbones import dinov2_vitl14_reg
 from .dinov2.layers import Mlp, PatchEmbed
 from .layers.attention import FlashAttentionRope
 from .layers.block import BlockRope, PoseInjectBlock
-from .layers.pos_embed import RoPE2D, PositionGetter
-from .dinov2.hub.backbones import dinov2_vitl14, dinov2_vitl14_reg
-from ..utils.geometry import se3_inverse, get_pixel, homogenize_points
-from .layers.transformer_head import TransformerDecoder, ContextOnlyTransformerDecoder
+from .layers.camera_head import CameraHead
+from .layers.conv_head import ConvHead
+from .layers.pos_embed import PositionGetter, RoPE2D
+from .layers.transformer_head import ContextOnlyTransformerDecoder, TransformerDecoder
 
 
 class Pi3X(nn.Module, PyTorchModelHubMixin):

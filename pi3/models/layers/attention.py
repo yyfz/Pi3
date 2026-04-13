@@ -7,21 +7,17 @@
 #   https://github.com/facebookresearch/dino/blob/master/vision_transformer.py
 #   https://github.com/rwightman/pytorch-image-models/tree/master/timm/models/vision_transformer.py
 
-import logging
 import os
-import warnings
 
-from torch import Tensor
-from torch import nn
 import torch
-
-from torch.nn.functional import scaled_dot_product_attention
+from torch import Tensor, nn
 from torch.nn.attention import SDPBackend
+from torch.nn.functional import scaled_dot_product_attention
 
 XFORMERS_ENABLED = os.environ.get("XFORMERS_DISABLED") is None
 try:
     if XFORMERS_ENABLED:
-        from xformers.ops import memory_efficient_attention, unbind
+        from xformers.ops import memory_efficient_attention, unbind  # noqa: F401
 
         XFORMERS_AVAILABLE = True
         # warnings.warn("xFormers is available (Attention)")
@@ -370,7 +366,9 @@ def get_attn_score(blk_class, x, frame_num, token_length, xpos=None):
     return score
 
 
-from .prope import _prepare_apply_fns, _prepare_apply_fns_query
+from .prope import _prepare_apply_fns
+
+
 class PRopeFlashAttention(AttentionRope):
     def forward(self, x: Tensor, extrinsics, H, W, patch_h, patch_w, K=None, attn_mask=None) -> Tensor:
         B, N, C = x.shape

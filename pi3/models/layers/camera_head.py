@@ -1,7 +1,9 @@
+from copy import deepcopy
+
 import torch
 import torch.nn as nn
-from copy import deepcopy
 import torch.nn.functional as F
+
 
 # code adapted from 'https://github.com/nianticlabs/marepo/blob/9a45e2bb07e5bb8cb997620088d352b439b13e0e/transformer/transformer.py#L172'
 class ResConvBlock(nn.Module):

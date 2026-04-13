@@ -7,24 +7,21 @@
 #   https://github.com/facebookresearch/dino/blob/master/vision_transformer.py
 #   https://github.com/rwightman/pytorch-image-models/tree/master/timm/layers/patch_embed.py
 
-import logging
 import os
-from typing import Callable, List, Any, Tuple, Dict
-import warnings
+from typing import Any, Callable, Dict, List, Tuple
 
 import torch
-from torch import nn, Tensor
+from torch import Tensor, nn
 
-from .attention import Attention, MemEffAttention, CrossAttentionRope, MemEffCrossAttentionRope, FlashAttentionRope
 from ..dinov2.layers.drop_path import DropPath
 from ..dinov2.layers.layer_scale import LayerScale
 from ..dinov2.layers.mlp import Mlp
-
+from .attention import Attention, CrossAttentionRope, MemEffAttention
 
 XFORMERS_ENABLED = os.environ.get("XFORMERS_DISABLED") is None
 try:
     if XFORMERS_ENABLED:
-        from xformers.ops import fmha, scaled_index_add, index_select_cat
+        from xformers.ops import fmha, index_select_cat, scaled_index_add
 
         XFORMERS_AVAILABLE = True
         # warnings.warn("xFormers is available (Block)")
@@ -407,8 +404,10 @@ class CrossBlockRope(nn.Module):
     
 
 
-from .attention import PRopeFlashAttention
 from ...utils.geometry import se3_inverse
+from .attention import PRopeFlashAttention
+
+
 class PoseInjectBlock(nn.Module):
     def __init__(
         self,
