@@ -3,12 +3,13 @@ Benchmark Pi3 / Pi3X capacity at different resolutions.
 Uses exponential probing (1, 2, 4, 8, ...) to quickly find the max power-of-2
 number of images that fits in GPU memory. No slow binary search.
 """
-import torch
-import gc
-import time
-import json
 import argparse
+import gc
+import json
+import time
 from datetime import datetime
+
+import torch
 
 
 def clear_gpu():

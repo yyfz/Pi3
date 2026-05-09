@@ -1,8 +1,10 @@
-import os
 import json
-import debugpy
-import socket
+import os
 import random
+import socket
+
+import debugpy
+
 
 def update_vscode_launch_file(host: str, port: int):
     """Update the .vscode/launch.json file with the new host and port."""

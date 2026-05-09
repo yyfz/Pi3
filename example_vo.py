@@ -1,10 +1,11 @@
-import torch
 import argparse
-import numpy as np
 import os
-from pi3.utils.basic import load_multimodal_data, write_ply
+
+import torch
+
 from pi3.models.pi3x import Pi3X
 from pi3.pipe.pi3x_vo import Pi3XVO
+from pi3.utils.basic import load_multimodal_data, write_ply
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Run inference with the Pi3 model.")
@@ -27,7 +28,7 @@ if __name__ == '__main__':
     print(f'Sampling interval: {args.interval}')
 
     # 1. Prepare model
-    print(f"Loading model...")
+    print("Loading model...")
     device = torch.device(args.device)
     if args.ckpt is not None:
         model = Pi3X().to(device).eval()

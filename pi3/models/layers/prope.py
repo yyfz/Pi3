@@ -52,7 +52,7 @@
 #    o_src = attn_src._apply_to_o(o_src)
 
 from functools import partial
-from typing import Callable, Optional, Tuple, List
+from typing import Callable, List, Optional, Tuple
 
 import torch
 import torch.nn.functional as F

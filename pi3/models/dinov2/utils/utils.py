@@ -3,7 +3,6 @@
 # This source code is licensed under the Apache License, Version 2.0
 # found in the LICENSE file in the root directory of this source tree.
 
-import logging
 import os
 import random
 import subprocess
@@ -12,7 +11,6 @@ from urllib.parse import urlparse
 import numpy as np
 import torch
 from torch import nn
-
 
 # logger = logging.getLogger("dinov2")
 

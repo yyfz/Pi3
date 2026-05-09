@@ -2,9 +2,10 @@
 Conv head is from MoGe (https://github.com/microsoft/moge)
 """
 
+from typing import *
+
 import torch
 import torch.nn as nn
-from typing import *
 import torch.nn.functional as F
 
 

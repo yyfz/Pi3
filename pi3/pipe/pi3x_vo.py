@@ -1,6 +1,6 @@
-from ..utils.geometry import homogenize_points, depth_edge
 import torch
-import torch.nn.functional as F
+
+from ..utils.geometry import depth_edge
 
 
 class Pi3XVO:
