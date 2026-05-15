@@ -9,6 +9,10 @@ from datetime import datetime
 import glob
 import gc
 import time
+
+# Set MPS fallback
+os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
+
 # import spaces         # only for web demo
 
 from pi3.utils.geometry import se3_inverse, homogenize_points, depth_edge
@@ -274,9 +278,12 @@ def run_model(target_dir, model) -> dict:
     print(f"Processing images from {target_dir}")
 
     # Device check
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    if not torch.cuda.is_available():
-        raise ValueError("CUDA is not available. Check your environment.")
+    if torch.cuda.is_available():
+        device = "cuda"
+    elif torch.backends.mps.is_available():
+        device = "mps"
+    else:
+        device = "cpu"
 
     # Move model to device
     model = model.to(device)
@@ -295,9 +302,15 @@ def run_model(target_dir, model) -> dict:
 
     # 3. Infer
     print("Running model inference...")
-    dtype = torch.bfloat16
+    if device == 'cuda':
+        dtype = torch.bfloat16 if torch.cuda.get_device_capability(0)[0] >= 8 else torch.float16
+    elif device == 'mps':
+        dtype = torch.float16
+    else:
+        dtype = torch.float32
+        
     with torch.no_grad():
-        with torch.amp.autocast('cuda', dtype=dtype):
+        with torch.amp.autocast(device, dtype=dtype, enabled=device != 'cpu'):
             predictions = model(imgs[None]) # Add batch dimension
     predictions['images'] = imgs[None].permute(0, 1, 3, 4, 2)
     predictions['conf'] = torch.sigmoid(predictions['conf'])
@@ -562,9 +575,14 @@ skiing = "examples/skiing.mp4"
 
 if __name__ == '__main__':
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    if torch.cuda.is_available():
+        device = "cuda"
+    elif torch.backends.mps.is_available():
+        device = "mps"
+    else:
+        device = "cpu"
 
-    print("Initializing and loading Pi3 model...")
+    print(f"Initializing and loading Pi3 model on {device}...")
 
     model = Pi3.from_pretrained("yyfz233/Pi3")
     # model = Pi3()

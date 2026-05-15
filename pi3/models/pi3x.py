@@ -291,7 +291,7 @@ class Pi3X(nn.Module, PyTorchModelHubMixin):
         hidden = self.encoder(imgs, is_training=True)["x_norm_patchtokens"]
 
         if self.use_multimodal:
-            with torch.amp.autocast(device_type='cuda', enabled=False):
+            with torch.amp.autocast(device_type=hidden.device.type, enabled=False):
                 if with_prior is True:
                     p_depth = p_ray = p_pose = 1.0
                 else:
@@ -410,7 +410,7 @@ class Pi3X(nn.Module, PyTorchModelHubMixin):
         # decode conf
         ret_conf = self.conf_decoder(hidden, xpos=pos)
 
-        with torch.amp.autocast(device_type='cuda', enabled=False):
+        with torch.amp.autocast(device_type=hidden.device.type, enabled=False):
             point_feat = ret_point[:, self.patch_start_idx:].float()
             xy, z = self._chunked_conv_head(self.point_head, point_feat, patch_h, patch_w)
             del point_feat

@@ -75,7 +75,7 @@ class Pi3XVO:
                     model_kwargs['mask_add_ray'] = mask_ray
                     model_kwargs['with_prior'] = True
 
-            with torch.amp.autocast('cuda', dtype=dtype):
+            with torch.amp.autocast(chunk_imgs.device.type, dtype=dtype, enabled=chunk_imgs.device.type != 'cpu'):
                 pred = self.model(chunk_imgs, **model_kwargs)
             
             curr_local_depth = pred['local_points'][..., 2] 
@@ -133,7 +133,11 @@ class Pi3XVO:
             if 'poses' in model_kwargs: del model_kwargs['poses']
             if 'depths' in model_kwargs: del model_kwargs['depths']
             if 'rays' in model_kwargs: del model_kwargs['rays']
-            torch.cuda.empty_cache()
+            
+            if imgs.device.type == 'cuda':
+                torch.cuda.empty_cache()
+            elif imgs.device.type == 'mps':
+                torch.mps.empty_cache()
 
             if end_idx == T:
                 break
