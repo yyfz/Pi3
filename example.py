@@ -45,8 +45,8 @@ if __name__ == '__main__':
 
     # 2. Prepare input data
     # The load_images_as_tensor function will print the loading path
-    imgs = load_images_as_tensor(args.data_path, interval=args.interval).to(device) # (N, 3, H, W)
-
+    imgs, filenames = load_images_as_tensor(args.data_path, interval=args.interval) # (N, 3, H, W), filenames
+    imgs = imgs.to(device)
     # 3. Infer
     print("Running model inference...")
     dtype = torch.bfloat16 if torch.cuda.get_device_capability()[0] >= 8 else torch.float16
@@ -61,5 +61,8 @@ if __name__ == '__main__':
 
     # 5. Save points
     print(f"Saving point cloud to: {args.save_path}")
-    write_ply(res['points'][0][masks].cpu(), imgs.permute(0, 2, 3, 1)[masks], args.save_path)
+    # write_ply(res['points'][0][masks].cpu(), imgs.permute(0, 2, 3, 1)[masks], args.save_path)
+    res['filenames'] = filenames
+    torch.save(res, "pointclouds_1.pt")
     print("Done.")
+    
