@@ -14,7 +14,7 @@ def load_images_as_tensor(path='data/truck', interval=1, PIXEL_LIMIT=255000):
     then converts and stacks them into a single [N, 3, H, W] PyTorch tensor.
     """
     sources = [] 
-    
+    selected_filenames = []
     # --- 1. Load image paths or video frames ---
     if osp.isdir(path):
         print(f"Loading images from directory: {path}")
@@ -23,6 +23,7 @@ def load_images_as_tensor(path='data/truck', interval=1, PIXEL_LIMIT=255000):
             img_path = osp.join(path, filenames[i])
             try:
                 sources.append(Image.open(img_path).convert('RGB'))
+                selected_filenames.append(img_path)
             except Exception as e:
                 print(f"Could not load image {filenames[i]}: {e}")
     elif path.lower().endswith('.mp4'):
@@ -80,7 +81,7 @@ def load_images_as_tensor(path='data/truck', interval=1, PIXEL_LIMIT=255000):
         return torch.empty(0)
 
     # --- 4. Stack the list of tensors into a single [N, C, H, W] batch tensor ---
-    return torch.stack(tensor_list, dim=0)
+    return torch.stack(tensor_list, dim=0), selected_filenames
 
 
 def tensor_to_pil(tensor):
