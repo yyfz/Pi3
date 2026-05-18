@@ -56,7 +56,7 @@ class CameraHead(nn.Module):
         feat = feat.view(feat.size(0), -1)
 
         feat = self.more_mlps(feat)  # [B, D_]
-        with torch.amp.autocast(device_type='cuda', enabled=False):
+        with torch.amp.autocast(device_type=feat.device.type, enabled=False):
             out_t = self.fc_t(feat.float())  # [B,3]
             out_r = self.fc_rot(feat.float())  # [B,9]
             pose = self.convert_pose_to_4x4(BN, out_r, out_t, feat.device)

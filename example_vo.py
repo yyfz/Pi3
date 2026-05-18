@@ -2,6 +2,10 @@ import torch
 import argparse
 import numpy as np
 import os
+
+# Set MPS fallback before importing other modules that might use torch
+os.environ["PYTORCH_ENABLE_MPS_FALLBACK"] = "1"
+
 from pi3.utils.basic import load_multimodal_data, write_ply
 from pi3.models.pi3x import Pi3X
 from pi3.pipe.pi3x_vo import Pi3XVO
@@ -18,8 +22,16 @@ if __name__ == '__main__':
                         help="Interval to sample image. Default: 1 for images dir, 10 for video")
     parser.add_argument("--ckpt", type=str, default=None,
                         help="Path to the model checkpoint file. Default: None")
-    parser.add_argument("--device", type=str, default='cuda',
-                        help="Device to run inference on ('cuda' or 'cpu'). Default: 'cuda'")
+    
+    if torch.cuda.is_available():
+        default_device = 'cuda'
+    elif torch.backends.mps.is_available():
+        default_device = 'mps'
+    else:
+        default_device = 'cpu'
+
+    parser.add_argument("--device", type=str, default=default_device,
+                        help=f"Device to run inference on ('cuda', 'mps' or 'cpu'). Default: '{default_device}'")
                         
     args = parser.parse_args()
     if args.interval < 0:
@@ -29,6 +41,7 @@ if __name__ == '__main__':
     # 1. Prepare model
     print(f"Loading model...")
     device = torch.device(args.device)
+    print(f"Using device: {device}")
     if args.ckpt is not None:
         model = Pi3X().to(device).eval()
         if args.ckpt.endswith('.safetensors'):
@@ -50,7 +63,12 @@ if __name__ == '__main__':
 
     # 3. Infer
     print("Running model inference...")
-    dtype = torch.bfloat16 if torch.cuda.get_device_capability()[0] >= 8 else torch.float16
+    if device.type == 'cuda':
+        dtype = torch.bfloat16 if torch.cuda.get_device_capability()[0] >= 8 else torch.float16
+    elif device.type == 'mps':
+        dtype = torch.float16
+    else:
+        dtype = torch.float32
     
     with torch.no_grad():
         res = pipe(
