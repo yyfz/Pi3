@@ -146,8 +146,9 @@ class DynamicBatchSampler(Sampler):
         Args:
             epoch: The epoch number.
         """
-        # self.sampler.set_epoch(epoch)
         self.epoch = epoch
+        if hasattr(self.sampler, "set_epoch"):
+            self.sampler.set_epoch(epoch)
         self.rng_rank = np.random.default_rng(epoch * 100 + base_seed + self.rank)
         self.rng = np.random.default_rng(epoch * 100 + base_seed)
 
