@@ -46,6 +46,8 @@
     </p>
 </div>
 
+> [!TIP]                                                                                                                                                                                                           
+   🔥🔥🔥 **Check out our new [Pi4](https://github.com/yyfz/Pi4): better geometry, motion estimation, and stronger generalization.** 
 
 ## 📣 Updates
 * **[December 28, 2025]** 🚀 **Pi3X Released!** We have upgraded the model to **Pi3X**. This improved version eliminates grid artifacts (smoother point clouds), offers more precise confidence scoring, supports **conditional injection** (camera pose, intrinsics, depth), and enables **approximate metric scale** reconstruction.
