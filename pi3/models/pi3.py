@@ -189,7 +189,7 @@ class Pi3(nn.Module, PyTorchModelHubMixin):
         conf_hidden = self.conf_decoder(hidden, xpos=pos)
         camera_hidden = self.camera_decoder(hidden, xpos=pos)
 
-        with torch.amp.autocast(device_type='cuda', enabled=False):
+        with torch.amp.autocast(device_type=point_hidden.device.type, enabled=False):
             # local points
             point_hidden = point_hidden.float()
             ret = self.point_head([point_hidden[:, self.patch_start_idx:]], (H, W)).reshape(B, N, H, W, -1)
